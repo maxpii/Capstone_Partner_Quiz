@@ -1,3 +1,89 @@
+
+//Denis Muhhammed 12/3
+/*
+import java.io.*;
+import java.util.ArrayList;
+
+public class PartnerQuiz {
+    public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
+
+        // Process shaky.txt
+        try (BufferedReader reader = new BufferedReader(new FileReader("shaky.txt"));
+             BufferedWriter writer = new BufferedWriter(new FileWriter("shaky2.txt"))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String upperLine = "";
+                ArrayList<String> words = new ArrayList<>();
+
+                // Split line into words
+                String[] wordArray = line.split("\\s+");
+                for (String word : wordArray) {
+                    // Add word to ArrayList
+                    words.add(word);
+
+                    // Uppercase word character by character (slow!)
+                    for (int i = 0; i < word.length(); i++) {
+                        char c = Character.toUpperCase(word.charAt(i));
+
+                        // O(n²) string concatenation
+                        upperLine = upperLine + c;
+                    }
+
+                    // CPU-heavy loop to make threading matter
+                        for (int j = 0; j < 1000000; j++) {
+                                Math.sqrt(j); // intentional computation
+                        }
+
+                    upperLine = upperLine + " "; // add space between words
+                }
+
+                writer.write(upperLine);
+                writer.newLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("toy.txt"));
+                     BufferedWriter writer = new BufferedWriter(new FileWriter("toy2.txt"))) {
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        String upperLine = "";
+                        ArrayList<String> words = new ArrayList<>();
+
+                        // Split line into words
+                        String[] wordArray = line.split("\\s+");
+                        for (String word : wordArray) {
+                            // Add word to ArrayList
+                            words.add(word);
+
+                            // Uppercase word character by character (slow!)
+                            for (int i = 0; i < word.length(); i++) {
+                                char c = Character.toUpperCase(word.charAt(i));
+
+                                // O(n²) string concatenation
+                                upperLine = upperLine + c;
+                            }
+                            upperLine = upperLine + " "; // add space between words
+                        }
+
+                        writer.write(upperLine);
+                        writer.newLine();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+        }
+
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("Time taken: " + (endTime - startTime) + " ms");
+    }
+}
+*/
+
 import java.io.*;
 import java.util.ArrayList;
 
