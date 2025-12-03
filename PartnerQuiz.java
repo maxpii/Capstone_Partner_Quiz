@@ -1,39 +1,158 @@
-// Muhammad Raza and Denis Arsenev, 12/3/2025
+
+//Denis Muhhammed 12/3
+/*
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+
 public class PartnerQuiz {
-	public static void main(String[] args) {
-	long startTime = System.currentTimeMillis();
+    public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
 
-	try {
-		BufferedReader reader = new BufferedReader(new FileReader("shaky.txt"));
-		BufferedWriter writer = new BufferedWriter(new FileWriter("shaky2.txt"));
-		String line = "";
-		while ((line=reader.readLine())!=null) {
-			String upperLine = line.toUpperCase();
-			writer.write(upperLine);
-			writer.newLine();
-			//System.out.println(line);
-		}
-	} catch (Exception e) {}
+        // Process shaky.txt
+        try (BufferedReader reader = new BufferedReader(new FileReader("shaky.txt"));
+             BufferedWriter writer = new BufferedWriter(new FileWriter("shaky2.txt"))) {
 
-	// alice stuff
-	try {
-			BufferedReader reader = new BufferedReader(new FileReader("alice.txt"));
-			BufferedWriter writer = new BufferedWriter(new FileWriter("alice2.txt"));
-			String line = "";
-			while ((line=reader.readLine())!=null) {
-				String upperLine = line.toUpperCase();
-				writer.write(upperLine);
-				writer.newLine();
-				//System.out.println(line);
-			}
-		} catch (Exception e) {}
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String upperLine = "";
+                ArrayList<String> words = new ArrayList<>();
 
-		long endTime = System.currentTimeMillis();
-		long duration = endTime - startTime; // time in milliseconds
-		System.out.println("Time taken: " + duration + " ms");
+                // Split line into words
+                String[] wordArray = line.split("\\s+");
+                for (String word : wordArray) {
+                    // Add word to ArrayList
+                    words.add(word);
+
+                    // Uppercase word character by character (slow!)
+                    for (int i = 0; i < word.length(); i++) {
+                        char c = Character.toUpperCase(word.charAt(i));
+
+                        // O(n²) string concatenation
+                        upperLine = upperLine + c;
+                    }
+
+                    // CPU-heavy loop to make threading matter
+                        for (int j = 0; j < 1000000; j++) {
+                                Math.sqrt(j); // intentional computation
+                        }
+
+                    upperLine = upperLine + " "; // add space between words
+                }
+
+                writer.write(upperLine);
+                writer.newLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("toy.txt"));
+                     BufferedWriter writer = new BufferedWriter(new FileWriter("toy2.txt"))) {
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        String upperLine = "";
+                        ArrayList<String> words = new ArrayList<>();
+
+                        // Split line into words
+                        String[] wordArray = line.split("\\s+");
+                        for (String word : wordArray) {
+                            // Add word to ArrayList
+                            words.add(word);
+
+                            // Uppercase word character by character (slow!)
+                            for (int i = 0; i < word.length(); i++) {
+                                char c = Character.toUpperCase(word.charAt(i));
+
+                                // O(n²) string concatenation
+                                upperLine = upperLine + c;
+                            }
+                            upperLine = upperLine + " "; // add space between words
+                        }
+
+                        writer.write(upperLine);
+                        writer.newLine();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+        }
+
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("Time taken: " + (endTime - startTime) + " ms");
+    }
 }
+*/
+
+import java.io.*;
+import java.util.ArrayList;
+
+public class PartnerQuiz {
+    public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
+
+        // Runnable task for shaky.txt
+        Runnable shakyTask = () -> processFile("shaky.txt", "shaky_out.txt");
+
+        // Runnable task for toy.txt
+        Runnable toyTask = () -> processFile("toy.txt", "toy_out.txt");
+
+        // Create threads
+        Thread thread1 = new Thread(shakyTask);
+        Thread thread2 = new Thread(toyTask);
+
+        // Start threads
+        thread1.start();
+        thread2.start();
+
+        // Wait for both threads to finish
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("Time taken: " + (endTime - startTime) + " ms");
+    }
+
+    // Method to process a file: slow uppercasing + ArrayList of words + CPU-heavy loop
+    private static void processFile(String inputFile, String outputFile) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String upperLine = "";
+                ArrayList<String> words = new ArrayList<>();
+
+                // Split line into words
+                String[] wordArray = line.split("\\s+");
+                for (String word : wordArray) {
+                    words.add(word); // store original word
+
+                    // Uppercase each character individually (slow O(n^2))
+                    for (int i = 0; i < word.length(); i++) {
+                        char c = Character.toUpperCase(word.charAt(i));
+
+                        // Append to string (still slow)
+                        upperLine = upperLine + c;
+
+                        // CPU-heavy loop to make threading matter
+                        for (int j = 0; j < 10000; j++) {
+                            Math.sqrt(j); // intentional computation
+                        }
+                    }
+                    upperLine = upperLine + " "; // preserve spaces
+                }
+
+                writer.write(upperLine);
+                writer.newLine();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
